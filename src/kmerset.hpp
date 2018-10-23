@@ -60,13 +60,16 @@ void kmerset_init(Kmerset &kmerset, const char *fname, size_t kmerlen, bool isca
 
 template <typename T>
 size_t set_calc_intersize(const std::set<T> &setA, const std::set<T> &setB) {
-	if (setA.size() > setB.size()) { return set_calc_intersize(setB, setA); }
+	if (setA.size() > setB.size()) return set_calc_intersize(setB, setA);
 	size_t intersize = 0;
-	for (T elemA : setA) {
-		if (setB.find(elemA) != setB.end()) {
-			intersize++;
-		}
-	}
+    auto ita = setA.begin(), itb = setB.begin();
+    for(;;) {
+        if(*ita == *itb) {
+            ++intersize, ++ita, ++itb;
+        } else if(*ita < *itb) {
+            if(++ita == setA.end()) break;
+        } else if(++itb == setB.end()) break;
+    }
 	return intersize;
 }
 
