@@ -114,10 +114,8 @@ size_t CBuf::nseqs() {
 }
 
 unsigned char CBuf::fgetc_buf() {
-	if (bufidx + 1 < readsize) {
-		bufidx++;			
-		return buffer[bufidx];
-	} else {
+	if (bufidx + 1 < readsize) return buffer[++bufidx];
+	else {
 #if IS_INPUT_GZIPPED
 		readsize = gzread(file, buffer, BUFSIZE);
 #else

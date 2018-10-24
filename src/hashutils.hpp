@@ -27,7 +27,6 @@
 #include <vector>
 
 #define MEDIAN2X(data, n) ((data[(n-1)/2] + data[n/2]))
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define NBITS(x) (8*sizeof(x))
 
@@ -48,7 +47,7 @@ void binsign(std::vector<uint64_t> &signs, const uint64_t sign, const uint64_t b
 		binidx--;
 	}
 #else
-	signs[binidx] = MIN(signs[binidx], sign);
+	signs[binidx] = std::min(signs[binidx], sign);
 #endif
 }
 
@@ -70,18 +69,16 @@ int densifybin(std::vector<uint64_t> &signs) {
 	uint64_t minval = UINT64_MAX;
 	uint64_t maxval = 0;
 	for (auto sign : signs) { 
-		minval = MIN(minval, sign);
-		maxval = MAX(maxval, sign);
+		minval = std::min(minval, sign);
+		maxval = std::max(maxval, sign);
 	}
 	if (UINT64_MAX != maxval) { return 0; }
 	if (UINT64_MAX == minval) { return -1; }
 	for (uint64_t i = 0; i < signs.size(); i++) {
 		uint64_t j = i;
 		uint64_t nattempts = 0;
-		while (UINT64_MAX == signs[j]) {
-			j = univhash2(i, nattempts) % signs.size();
-			nattempts++;
-		}
+		while (UINT64_MAX == signs[j])
+			j = univhash2(i, nattempts++) % signs.size();
 		signs[i] = signs[j];
 	}
 	return 1;
@@ -169,7 +166,7 @@ void hashupdateDna(CBuf &cbuf, std::set<uint64_t, T> &signs,
 		if (!isstrandpreserved) {
 			auto signval2 = hfrc.hashvalue;
 			//std::cerr << "kmer = " << cbuf.tostring() << " value = " << signval << "\t" << signval2 << std::endl;
-			signval = MIN(signval, signval2); // uniformity is not needed because this is a perfect hash function
+			signval = std::min(signval, signval2); // uniformity is not needed because this is a perfect hash function
 		}
 		signs.insert(signval);
 	}
@@ -229,7 +226,7 @@ void hashupdate1(CBuf & cbuf, std::vector<uint64_t> &signs,
 				auto signval2 = hfrcs[inc].hashvalue % SIGN_MOD;
 				signval = doublehash(signval, signval2);
 			}
-			signs[inc] = MIN(signs[inc], signval);
+			signs[inc] = std::min(signs[inc], signval);
 		}
 	}
 }

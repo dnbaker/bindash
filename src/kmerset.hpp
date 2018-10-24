@@ -82,7 +82,7 @@ void kmerset_dist(const Kmerset &ks1, const Kmerset &ks2, size_t kmerlen) {
 	double andprob = ks1.matchprob * ks2.matchprob;
 	double p = andprob / (ks1.matchprob + ks2.matchprob - andprob);
 	//double pvalue = bhmath_pbinom(sketchsize64 * NBITS(uint64_t), p, intersize);
-	size_t n = MIN(ks1.kmers.size(), ks2.kmers.size());
+	size_t n = std::min(ks1.kmers.size(), ks2.kmers.size());
 	double sd = sqrt(n * p * (1-p));
 	printf("%s\t%s\t%.4f\terf(%.4f)\t%lu\t%lu\n",
 		   ks1.name.c_str(), ks2.name.c_str(),

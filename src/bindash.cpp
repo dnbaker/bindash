@@ -327,10 +327,10 @@ void cmddist(bool tCLUSTER, bool tNNEIGHBORS,
 	if (!tNNEIGHBORS) {
 
 		for (size_t i2 = 0; i2 < entities1.size(); i2 += ISIZE) {
-			size_t i2max = MIN(i2 + ISIZE, entities1.size());
+			size_t i2max = std::min(i2 + ISIZE, entities1.size());
 			size_t j2start = (tCLUSTER ? (i2+0) : 0);
 			for (size_t j2 = j2start; j2 < entities2.size(); j2 += CACHE_SIZE) {
-					size_t j2max = MIN(j2 + CACHE_SIZE, entities2.size());
+					size_t j2max = std::min(j2 + CACHE_SIZE, entities2.size());
 				
 #if defined(_OPENMP)	
 #pragma omp parallel for schedule(dynamic, 1) num_threads(nthreads)	
@@ -360,9 +360,9 @@ void cmddist(bool tCLUSTER, bool tNNEIGHBORS,
 		typedef std::tuple<double, double, size_t, size_t, size_t, size_t> hit_t; 
 		std::array<std::priority_queue<hit_t>, ISIZE> tophits_arr;
 		for (size_t i2 = 0; i2 < entities1.size(); i2 += ISIZE) {
-			size_t i2max = MIN(i2 + ISIZE, entities1.size());
+			size_t i2max = std::min(i2 + ISIZE, entities1.size());
 			for (size_t j2 = 0; j2 < entities2.size(); j2 += CACHE_SIZE) {
-				size_t j2max = MIN(j2 + CACHE_SIZE, entities2.size());
+				size_t j2max = std::min(j2 + CACHE_SIZE, entities2.size());
 				
 #if defined(_OPENMP)
 #pragma omp parallel for schedule(dynamic, 1) num_threads(nthreads)
